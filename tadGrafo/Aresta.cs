@@ -27,7 +27,7 @@ namespace tadGrafo {
             }
         }
 
-        public int Valor
+        public int Value
         {
             get
             {

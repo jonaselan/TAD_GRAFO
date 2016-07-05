@@ -43,54 +43,15 @@ namespace tadGrafo {
             m[3, 2] = a2;
             m[1, 3] = a1;
             m[2, 3] = a2;
-            
-            /*
-            public List<Vertice> finalVertices(Aresta a){
-                List<Vertice> l = new List<Vertice>();
-                l.Add(a.Vertice1);
-                l.Add(a.Vertice2);
-                return l;
-            }
-            */
-            // finalVertices
-            //l.finalVertices(a1).ForEach(i => Console.WriteLine(i.Valor));
-            finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
 
-            /*
-            public Vertice oposto(Vertice v, Aresta a) {
-                if (a.Vertice1.Equals(v)) {
-                    return a.Vertice1;
-                }
-                else if (a.Vertice2.Equals(v)) {
-                    return a.Vertice2;
-                }
-
-                return null;
-            }
-            */
-            //oposto
-            //l.oposto(v1, a1);
-
+            //printMatriz();
+            //finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
+            //Console.WriteLine(oposto(v0, a2).Value);
+            Console.WriteLine(eAdjacente(v0, v3));
             Console.ReadKey();
 
         }
-        /*
-        static public List<Vertice> finalVertices1(Aresta a) {
-            List<Vertice> vs = new List<Vertice>();
-
-            for (int i = 0; i < vertices.Count; i++) {
-                for (int j = 0; j < vertices.Count; j++) {
-                    if ((m[i, j] != null) && (m[i, j] == a)) { // encontrou a aresta
-                        vs.Add(getVerticebyIndex(vertices, i));
-                        vs.Add(getVerticebyIndex(vertices, j));
-                        return vs;
-                    }
-                }
-            }
-
-            return null;
-        }
-        */
+        
         static public List<Vertice> finalVertices(Aresta a) {
             List<Vertice> vs = new List<Vertice>();
 
@@ -117,7 +78,6 @@ namespace tadGrafo {
             else if (v.Equals(coluna)) { // se for a coluna
                 return linha; 
             }
-             
             return null; // o vertice não faz parte da aresta
         }
 
@@ -126,7 +86,27 @@ namespace tadGrafo {
                 return true;
             }
             return false;
-        } 
+        }
+
+        static public void substituir(Vertice v, int valorVertice) {
+            for (int i = 0; i < vertices.Count; i++) {
+                if (vertices[i].Equals(v)) {
+                    vertices[i].Value = valorVertice;
+                    return;
+                }
+            }
+        }
+
+        static public void substituir(Aresta a, int valorAresta) {
+            for (int i = 0; i < vertices.Count; i++) {
+                for (int j = 0; j < vertices.Count; j++) {
+                    if (m[i,j].Equals(a)) {
+                        m[i,j].Value = valorAresta;
+                        return;
+                    }
+                }
+            }
+        }
 
         /* auxiliares */        
         static public Tuple<Vertice, Vertice> getVerticesAresta(Aresta a) {
@@ -153,6 +133,31 @@ namespace tadGrafo {
 
             return null;
         }
+        static public void printMatriz() {
+            for (int i = 0; i < vertices.Count; i++) {
+                for (int j = 0; j < vertices.Count; j++) {
+                    Console.Write(m[i, j].Value); 
+                }
+                Console.WriteLine();
+            }
+        }
     
     }
 }
+/*
+        static public List<Vertice> finalVertices1(Aresta a) {
+            List<Vertice> vs = new List<Vertice>();
+
+            for (int i = 0; i < vertices.Count; i++) {
+                for (int j = 0; j < vertices.Count; j++) {
+                    if ((m[i, j] != null) && (m[i, j] == a)) { // encontrou a aresta
+                        vs.Add(getVerticebyIndex(vertices, i));
+                        vs.Add(getVerticebyIndex(vertices, j));
+                        return vs;
+                    }
+                }
+            }
+
+            return null;
+        }
+        */
