@@ -62,7 +62,7 @@ namespace tadGrafo {
             removerVertice(vertices[1]);
             //removerAresta
 
-            // arestasIncidentes(vertices[1]);
+            //arestasIncidentes(vertices[1]);
             printMatrizIndex();
             Console.ReadKey();
 
@@ -154,6 +154,11 @@ namespace tadGrafo {
         } // DONE
 
         static public void removerVertice(Vertice v) {
+            // antes de reestruturar a matriz, guardar as arestas q serão removidas
+            List<Aresta> removerArestas = new List<Aresta>();
+            removerArestas = arestasIncidentes(v);
+
+            // começar a remoção das linhas/colunas
             Aresta[,] newM = new Aresta[vertices.Count - 1, vertices.Count - 1];
             int l = -1, c = -1;
 
@@ -170,12 +175,15 @@ namespace tadGrafo {
                 }
             }
             m = newM;
-            
+
+
             // remover arestas incidentes
-            List<Aresta> removerArestas = new List<Aresta>();
-            removerArestas = arestasIncidentes(v);
             for (int o = 0; o < removerArestas.Count; o++) {
-                removerAresta(removerArestas[o]);
+                arestas.Remove(removerArestas[o]);
+            }
+            // organizar por ondem crescente os index
+            for (int i = 0; i < arestas.Count; i++){
+                arestas[i].Index = i;
             }
 
             // remover o vertice da list e reorganiza-la
@@ -184,8 +192,7 @@ namespace tadGrafo {
 
             for (int i = indexVerticeRemovido; i < vertices.Count; i++) {
                 vertices[i].Index = i;
-            }
-              
+            } 
         } // DONE
 
         static public void removerAresta(Aresta a) {
