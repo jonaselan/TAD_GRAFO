@@ -9,7 +9,7 @@ namespace tadGrafo {
         
         static List<Vertice> vertices = new List<Vertice>();
         static List<Aresta> arestas = new List<Aresta>();
-        static Aresta[,] m = new Aresta[4, 4];
+        static Aresta[,] m;
 
         static void Main(string[] args) {
             Vertice v0 = new Vertice(0, 00);
@@ -23,18 +23,19 @@ namespace tadGrafo {
             vertices.Add(v2);
             vertices.Add(v3);
 
+            m = new Aresta[vertices.Count, vertices.Count];
+
             Aresta a0 = new Aresta(0, 99);
             Aresta a1 = new Aresta(1, 88);
             Aresta a2 = new Aresta(2, 77);
             Aresta a3 = new Aresta(3, 66);
-
-            
+                        
             arestas.Add(a0);
             arestas.Add(a1);
             arestas.Add(a2);
             arestas.Add(a3);    
 
-            // preenchendo tabela
+            // preenchendo matriz (grafo) 
             m[0, 1] = a0;
             m[0, 2] = a3;
             m[1, 0] = a0;
@@ -44,10 +45,10 @@ namespace tadGrafo {
             m[1, 3] = a1;
             m[2, 3] = a2;
 
-            //printMatriz();
-            //finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
-            //Console.WriteLine(oposto(v0, a2).Value);
-            Console.WriteLine(eAdjacente(v0, v3));
+            // printMatriz();
+            // finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
+            // Console.WriteLine(oposto(v0, a2).Value);
+            // Console.WriteLine(eAdjacente(v0, v3));
             Console.ReadKey();
 
         }
@@ -88,24 +89,40 @@ namespace tadGrafo {
             return false;
         }
 
-        static public void substituir(Vertice v, int valorVertice) {
+        static public void substituir(Vertice v, int x) {
             for (int i = 0; i < vertices.Count; i++) {
                 if (vertices[i].Equals(v)) {
-                    vertices[i].Value = valorVertice;
+                    vertices[i].Value = x;
                     return;
                 }
             }
         }
 
-        static public void substituir(Aresta a, int valorAresta) {
+        static public void substituir(Aresta a, int x) {
             for (int i = 0; i < vertices.Count; i++) {
                 for (int j = 0; j < vertices.Count; j++) {
                     if (m[i,j].Equals(a)) {
-                        m[i,j].Value = valorAresta;
+                        m[i,j].Value = x;
                         return;
                     }
                 }
             }
+        }
+
+        static public void inserirVertice(Vertice v) {
+            vertices.Add(v);
+            Aresta[,] newM = new Aresta[vertices.Count, vertices.Count];
+            
+            for (int i = 0; i < vertices.Count; i++)
+                for (int j = 0; j < vertices.Count; j++)
+                       newM[i, j] = m[i, j];
+
+            m = newM;
+        }
+
+        static public void inserirAresta(Vertice v1, Vertice v2, Aresta a) {
+            if (m[v1.Index, v2.Index] != null) 
+                m[v1.Index, v2.Index] = a; // supondo que não há arestas paralelas
         }
 
         /* auxiliares */        
@@ -120,13 +137,10 @@ namespace tadGrafo {
 
             return null;
         }
-        static public Vertice getVerticebyIndex(int index)
-        {
+        static public Vertice getVerticebyIndex(int index) {
             // verificar se o Vertice da vez tem index igual ao que foi passado por paramentro
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                if (vertices[i].Index.Equals(index))
-                {
+            for (int i = 0; i < vertices.Count; i++) {
+                if (vertices[i].Index.Equals(index)) {
                     return vertices[i];
                 }
             }
