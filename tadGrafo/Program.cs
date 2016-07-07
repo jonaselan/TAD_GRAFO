@@ -25,10 +25,10 @@ namespace tadGrafo {
 
             m = new Aresta[vertices.Count, vertices.Count];
 
-            Aresta a0 = new Aresta(0, 99);
-            Aresta a1 = new Aresta(1, 88);
-            Aresta a2 = new Aresta(2, 77);
-            Aresta a3 = new Aresta(3, 66);
+            Aresta a0 = new Aresta(0, 99, false);
+            Aresta a1 = new Aresta(1, 88, false);
+            Aresta a2 = new Aresta(2, 77, false);
+            Aresta a3 = new Aresta(3, 66, false);
             arestas = new List<Aresta>();
 
             arestas.Add(a0);
@@ -59,7 +59,7 @@ namespace tadGrafo {
             */
             
             /* tstar remover */
-            removerVertice(vertices[1]);
+            //removerVertice(vertices[1]);
             //removerAresta
 
             //arestasIncidentes(vertices[1]);
@@ -146,14 +146,20 @@ namespace tadGrafo {
 
         static public void inserirAresta(Vertice v1, Vertice v2, Aresta a) {
             a.Index = arestas.Count; // fixar o tamanho do index
+            a.Direcionada = false; // não direcionada
             arestas.Add(a);
-            if (m[v1.Index, v2.Index] == null)
-                m[v1.Index, v2.Index] = a; // supondo que não há arestas paralelas
+            if (m[v1.Index, v2.Index] == null){
+                // supondo que não há arestas paralelas
+                m[v1.Index, v2.Index] = a;
+                m[v2.Index, v1.Index] = a;
+            }
             else
                 Console.WriteLine("já existe um valor nessa posição!");
         } // DONE
 
-        static public void removerVertice(Vertice v) {
+        static public int removerVertice(Vertice v) {
+            // elemento do vertice que está a ser removido
+            int elemntV = v.Value;
             // antes de reestruturar a matriz, guardar as arestas q serão removidas
             List<Aresta> removerArestas = new List<Aresta>();
             removerArestas = arestasIncidentes(v);
@@ -192,7 +198,9 @@ namespace tadGrafo {
 
             for (int i = indexVerticeRemovido; i < vertices.Count; i++) {
                 vertices[i].Index = i;
-            } 
+            }
+
+            return elemntV;
         } // DONE
 
         static public void removerAresta(Aresta a) {
@@ -233,6 +241,22 @@ namespace tadGrafo {
             return arestas;
         } // DONE
 
+        static public bool eDirecionada(Aresta a) {
+            return a.Direcionada;
+        }
+        
+        static public void inserirArestaDirecionada(Vertice v1, Vertice v2, Aresta a) {
+            a.Index = arestas.Count; // fixar o tamanho do index
+            a.Direcionada = true; // direcionada
+            arestas.Add(a);
+            if (m[v1.Index, v2.Index] == null) {
+                // supondo que não há arestas paralelas
+                m[v1.Index, v2.Index] = a;
+            }
+            else
+                Console.WriteLine("já existe um valor nessa posição!");
+        } // DONE
+        
         /* auxiliares */        
         static public Tuple<Vertice, Vertice> getVerticesAresta(Aresta a) {
             for (int i = 0; i < vertices.Count; i++) {

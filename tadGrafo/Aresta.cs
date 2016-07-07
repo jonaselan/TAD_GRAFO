@@ -8,12 +8,14 @@ namespace tadGrafo {
     class Aresta {
         private int index;
         private int value;
+        private bool direcionada;
         //private Vertice vertice1;
         //private Vertice vertice2; 
 
-        public Aresta(int index, int value) {
+        public Aresta(int index, int value, bool direcionada) {
             this.index = index;
             this.value = value;
+            this.direcionada = direcionada;
             //this.vertice1 = v1;
             //this.vertice2 = v2;
         }
@@ -36,6 +38,15 @@ namespace tadGrafo {
             set
             {
                 value = value;
+            }
+        }
+
+        public bool Direcionada {
+            get {
+                return direcionada;
+            }
+            set {
+                this.direcionada = value;
             }
         }
 
