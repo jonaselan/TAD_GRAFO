@@ -10,6 +10,7 @@ namespace tadGrafo {
         static List<Vertice> vertices;
         static List<Aresta> arestas;
         static Aresta[,] m;
+        public static Exception valorNaoEncontrado { get; set; }
 
         static void Main(string[] args) {
             Vertice v0 = new Vertice(0, 00);
@@ -45,29 +46,42 @@ namespace tadGrafo {
             m[3, 2] = a2;
             m[1, 3] = a1;
             m[2, 3] = a2;
-            
-            // finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
-            // Console.WriteLine(oposto(v0, a2).Value);
-            // Console.WriteLine(eAdjacente(v0, v3));
-            //substituir(v0, 3);
 
-            /* testar inserir
-            Vertice ver = new Vertice(4, 65);
-            inserirVertice(ver);
-            Aresta are = new Aresta(4, 12);
-            inserirAresta(vertices[vertices.Count - 1], vertices[3], are);
-            */
-            
-            /* tstar remover */
-            //removerVertice(vertices[1]);
-            //removerAresta
+            // TODO: verificar quando essas funções retornam zero 
 
-            //arestasIncidentes(vertices[1]);
-            printMatrizIndex();
-            Console.ReadKey();
+            try { 
+                //finalVertices(a2).ForEach(i => Console.WriteLine(i.Index));
+                //Console.WriteLine(oposto(v0, a0).Value); 
+
+                // Console.WriteLine(eAdjacente(v0, v3));
+                //substituir(v0, 3);
+                //substituir(a0, 3);
+
+                /* testar inserir
+                Vertice ver = new Vertice(4, 65);
+                inserirVertice(ver);
+                Aresta are = new Aresta(4, 12);
+                inserirAresta(vertices[vertices.Count - 1], vertices[3], are);
+                */
+
+                /* testar remover */
+                //removerVertice(vertices[1]);
+                //removerAresta(a0);
+
+                //arestasIncidentes(vertices[1]);
+                //printMatrizIndex();
+                 grafoEuler();
+            }
+            catch (ExceptionGrafo e) {
+                
+            }
+            finally { 
+                Console.ReadKey();
+            }
 
         }
-        
+
+
         static public List<Vertice> finalVertices(Aresta a) {
             List<Vertice> vs = new List<Vertice>();
 
@@ -78,8 +92,10 @@ namespace tadGrafo {
                 vs.Add(tuple.Item2);
                 return vs;
             }
-             
-            return null; 
+            
+            throw new ExceptionGrafo("Erro!");
+            //return null;
+            
         } // DONE
         
         static public Vertice oposto(Vertice v, Aresta a) {
@@ -94,7 +110,10 @@ namespace tadGrafo {
             else if (v.Equals(coluna)) { // se for a coluna
                 return linha; 
             }
-            return null; // o vertice não faz parte da aresta
+
+            throw new ExceptionGrafo("Erro!");
+            // return null; // o vertice não faz parte da aresta
+
         } //DONE
 
         static public bool eAdjacente(Vertice vert1, Vertice vert2) {
@@ -160,7 +179,7 @@ namespace tadGrafo {
         static public int removerVertice(Vertice v) {
             // elemento do vertice que está a ser removido
             int elemntV = v.Value;
-            // antes de reestruturar a matriz, guardar as arestas q serão removidas
+            // antes de reestruturar a matriz, guardar as arestas que serão removidas
             List<Aresta> removerArestas = new List<Aresta>();
             removerArestas = arestasIncidentes(v);
 
@@ -207,18 +226,24 @@ namespace tadGrafo {
             // remover aresta da matriz
             for (int i = 0; i < vertices.Count; i++) {
                 for (int j = 0; j < vertices.Count; j++) {
-                    if (m[i, j].Equals(a)) {
+                    if ((m[i, j] != null) && (m[i, j].Equals(a)))
                         m[i, j] = null;
-                    }
+                    
                 }
             }
 
             // remover a aresta da list e reorganiza-la
-            int indexArestaRemovida = a.Index;
+            /*int indexArestaRemovida = a.Index;
             arestas.Remove(a);
             
             for (int i = indexArestaRemovida; i < arestas.Count; i++) {
                 arestas[i].Index = i;
+            }*/
+            for (int i = 0; i < arestas.Count; i++) {
+                if (arestas[i] == a) {
+                    arestas[i] = null;
+                }
+                break;
             }
         } // DONE
 
@@ -243,7 +268,7 @@ namespace tadGrafo {
 
         static public bool eDirecionada(Aresta a) {
             return a.Direcionada;
-        }
+        } // DONE
         
         static public void inserirArestaDirecionada(Vertice v1, Vertice v2, Aresta a) {
             a.Index = arestas.Count; // fixar o tamanho do index
@@ -251,12 +276,38 @@ namespace tadGrafo {
             arestas.Add(a);
             if (m[v1.Index, v2.Index] == null) {
                 // supondo que não há arestas paralelas
+                // amarra linha e coluna
                 m[v1.Index, v2.Index] = a;
             }
             else
                 Console.WriteLine("já existe um valor nessa posição!");
         } // DONE
-        
+
+        static public void grafoEuler() {
+            int soma = 0;
+            int ocorre = 0;
+            // passar por cada vertice
+            for (int g = 0; g < arestas.Count; g++) {
+                // if soma > 2 return não há caminho
+                soma = 0;
+                for (int i = 0; i < vertices.Count; i++) {
+                    for (int j = 0; j < vertices.Count; j++) {
+                        if (arestas[g] == m[i, j]) {
+                            soma++;
+                        }
+                    }
+                }
+                if (soma > 2) {
+                    ocorre++;
+                }
+                if (ocorre > 2) {
+                    Console.WriteLine("não é euleriano");
+                    return;
+                }
+            }
+            Console.WriteLine("é euleriano");
+        }
+
         /* auxiliares */        
         static public Tuple<Vertice, Vertice> getVerticesAresta(Aresta a) {
             for (int i = 0; i < vertices.Count; i++) {
@@ -270,14 +321,14 @@ namespace tadGrafo {
             return null;
         }
         static public Vertice getVerticebyIndex(int index) {
-            // verificar se o Vertice da vez tem index igual ao que foi passado por paramentro
+            // verificar se o vertice da vez tem index igual ao que foi passado por paramentro
             for (int i = 0; i < vertices.Count; i++) {
                 if (vertices[i].Index.Equals(index)) {
                     return vertices[i];
                 }
             }
-
-            return null;
+            throw new ExceptionGrafo("Erro!");
+            //return null;
         }
         static public void printMatrizIndex() {
             for (int i = 0; i < vertices.Count; i++) {
@@ -293,19 +344,16 @@ namespace tadGrafo {
         }
         static public void printMatrizValue()
         {
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                for (int j = 0; j < vertices.Count; j++)
-                {
-                    if (m[i, j] != null)
-                    {
+            for (int i = 0; i < vertices.Count; i++) {
+                for (int j = 0; j < vertices.Count; j++) {
+                    if (m[i, j] != null) 
                         Console.Write(m[i, j].Value + " ");
-                    }
                     else
                         Console.Write("- ");
                 }
                 Console.WriteLine();
             }
         }
+
     }
 }
