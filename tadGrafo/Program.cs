@@ -117,9 +117,18 @@ namespace tadGrafo {
         } //DONE
 
         static public bool eAdjacente(Vertice vert1, Vertice vert2) {
-            if (m[vert1.Index, vert2.Index] != null) {
+            // se for direcionada, a ordem importa
+            if ((m[vert1.Index, vert2.Index].Direcionada) && (m[vert1.Index, vert2.Index] != null)) {
                 return true;
             }
+            // não direcionada
+            else if (!(m[vert1.Index, vert2.Index].Direcionada) && (m[vert1.Index, vert2.Index] != null)) {
+                return true;
+	        }
+            else if (!(m[vert2.Index, vert1.Index].Direcionada) && (m[vert2.Index, vert1.Index] != null)) {
+                return true;
+            }
+            // não é adjacente
             return false;
         } //DONE
 
